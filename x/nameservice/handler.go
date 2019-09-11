@@ -2,7 +2,8 @@ package nameservice
 
 import (
 	"fmt"
-	"github.com/cosmos/sdk-application-tutorial/x/nameservice/types"
+
+	"github.com/cosmos/sdk-application-tutorial/x/nameservice/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -35,16 +36,17 @@ func handleMsgSetName(ctx sdk.Context, keeper Keeper, msg MsgSetName) sdk.Result
 
 // Handle a message to buy name
 func handleMsgBuyName(ctx sdk.Context, keeper Keeper, msg MsgBuyName) sdk.Result {
-	if keeper.GetPrice(ctx, msg.Name).IsAllGT(msg.Bid) { // Checks if the the bid price is greater than the price paid by the current owner
+	// Checks if the the bid price is greater than the price paid by the current owner
+	if keeper.GetPrice(ctx, msg.Name).IsAllGT(msg.Bid) {
 		return sdk.ErrInsufficientCoins("Bid not high enough").Result() // If not, throw an error
 	}
 	if keeper.HasOwner(ctx, msg.Name) {
-		err := keeper.coinKeeper.SendCoins(ctx, msg.Buyer, keeper.GetOwner(ctx, msg.Name), msg.Bid)
+		err := keeper.CoinKeeper.SendCoins(ctx, msg.Buyer, keeper.GetOwner(ctx, msg.Name), msg.Bid)
 		if err != nil {
 			return sdk.ErrInsufficientCoins("Buyer does not have enough coins").Result()
 		}
 	} else {
-		_, err := keeper.coinKeeper.SubtractCoins(ctx, msg.Buyer, msg.Bid) // If so, deduct the Bid amount from the sender
+		_, err := keeper.CoinKeeper.SubtractCoins(ctx, msg.Buyer, msg.Bid) // If so, deduct the Bid amount from the sender
 		if err != nil {
 			return sdk.ErrInsufficientCoins("Buyer does not have enough coins").Result()
 		}

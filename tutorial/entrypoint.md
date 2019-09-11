@@ -36,8 +36,8 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	app "github.com/cosmos/sdk-application-tutorial"
 	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tendermint/libs/db"
 	tmtypes "github.com/tendermint/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
 )
 
 func main() {
@@ -132,10 +132,6 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 )
 
-const (
-	storeAcc = "acc"
-	storeNS  = "nameservice"
-)
 
 func main() {
 	cobra.EnableCommandSorting = false
